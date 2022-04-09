@@ -9,13 +9,20 @@ import SwiftUI
 
 @main
 struct CandleMemoApp: App {
-    //@StateObject private var upbitAPIController = UpbitAPIController()
+    @Environment(\.scenePhase) var scenePhase
+    
+    @StateObject private var upbitAPIController = UpbitAPIController()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                //.environmentObject(upbitAPIController)
+                .environmentObject(upbitAPIController)
                 .preferredColorScheme(.dark)
+                .onChange(of: scenePhase) { newValue in
+                    if newValue == .active {
+                        upbitAPIController.webSocketConnect()
+                    }
+                }
         }
     }
 }

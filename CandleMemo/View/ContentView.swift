@@ -9,37 +9,59 @@ import Combine
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var upbitAPIController = UpbitAPIController()
+    @EnvironmentObject private var upbitAPIController: UpbitAPIController
+    
     @StateObject private var viewModel = ViewModel()
-    
-    let detector: CurrentValueSubject<CGFloat, Never>
-    let publisher: AnyPublisher<CGFloat, Never>
-    
-    init() {
-        let detector = CurrentValueSubject<CGFloat, Never>(0)
-
-        self.publisher = detector
-            .debounce(for: .seconds(0.2), scheduler: DispatchQueue.main)
-            .dropFirst()
-            .eraseToAnyPublisher()
-        
-        self.detector = detector
-    }
     
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack {
+                    ZStack {
+                        Divider()
+                    }
+                    .padding(.leading)
+                    
                     ForEach(upbitAPIController.krwMarkets, id: \.self) { market in
                         HStack() {
-                            Text(viewModel.cutKRW(from: market.code))
-                                .font(.title2)
-                                .fontWeight(.bold)
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(viewModel.cutKRW(from: market.code))
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                
+                                Text(market.koreanName)
+                                    .font(.footnote)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.gray)
+                            }
+                            
                             Spacer()
                             
-                            Text("\(upbitAPIController.tickers[market.code]?.trade_price ?? 0)")
+                            VStack(alignment: .trailing, spacing: 5) {
+                                Text(viewModel.priceFormat(upbitAPIController.tickers[market.code]?.trade_price ?? 0))
+                                    .font(.title3)
+                                    .fontWeight(.semibold)
+                                
+                                HStack(alignment: .center) {
+                                    Spacer()
+                                    Text(viewModel.rateFormat(upbitAPIController.tickers[market.code]?.signed_change_rate ?? 0))
+                                        .font(.footnote)
+                                        .fontWeight(.semibold)
+                                        .padding(.horizontal, 5)
+                                }
+                                .frame(width: 70, height: 25)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                        .fill(upbitAPIController.tickers[market.code]?.change ?? "EVEN" == "RISE" ? .red : .green)
+                                )
+                            }
                         }
-                        Divider()
+                        .padding(.horizontal)
+                        
+                        ZStack {
+                            Divider()
+                        }
+                        .padding(.leading)
                     }
                 }
                 .background(
@@ -49,11 +71,11 @@ struct ContentView: View {
                 )
                 .onPreferenceChange(ViewOffsetKey.self) {
                     upbitAPIController.isScrolliing = true
-                    detector.send($0)
+                    viewModel.finishDetector.send($0)
                 }
             }
             .coordinateSpace(name: "scroll")
-            .onReceive(publisher) { _ in
+            .onReceive(viewModel.finishPublisher) { _ in
                 upbitAPIController.isScrolliing = false
             }
             .toolbar {
