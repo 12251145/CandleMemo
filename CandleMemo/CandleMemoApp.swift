@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct CandleMemoApp: App {
+    //@StateObject private var upbitAPIController = UpbitAPIController()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                //.environmentObject(upbitAPIController)
+                .preferredColorScheme(.dark)
         }
     }
 }
