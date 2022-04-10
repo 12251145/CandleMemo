@@ -15,15 +15,11 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
     @Published var tickers: [String : Ticker] = [:]
     
     private var socket: WebSocket?
-    
-    var cancellables = Set<AnyCancellable>()
-    
-    var isScrolliing = false
+    private var cancellables = Set<AnyCancellable>()
+    private var isPause = false
 
 
     init() {
-        
-        self.isScrolliing = false
         getKRWMarkets()
     }
     
@@ -74,7 +70,7 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
     }
     
     func parse(data: Data) {
-        if !isScrolliing {
+        if !isPause {
             if let tickerData = try? JSONDecoder().decode(Ticker.self, from: data) {
                 print(tickerData)
                 tickers[tickerData.code] = tickerData
@@ -102,6 +98,14 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
                 self?.krwMarkets = returnedMarkets.filter { $0.code.hasPrefix("KRW") }
             }
             .store(in: &cancellables)
+    }
+    
+    func pausePublishTickers() {
+        isPause = true
+    }
+    
+    func resumePublishTickers() {
+        isPause = false
     }
 }
 
