@@ -15,7 +15,9 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
     @Published var tickers: [String : Ticker] = [:]
     
     private var socket: WebSocket?
+    
     private var cancellables = Set<AnyCancellable>()
+    
     private var shouldPause = false
 
 
@@ -53,12 +55,11 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
             case .disconnected(let reason, let code):
                 print(".disconnected - \(reason), \(code)")
                 break
-            case .text(let string):
-                parse(data: string.data(using: .utf8)!)
-                
+            case .text(_):
+//                parse(data: string.data(using: .utf8)!)
                 break
             case .binary(let data):
-                parse(data: data)
+                updateTickers(data: data)
                 
                 break
             case .error(let error):
@@ -69,17 +70,16 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
         }
     }
     
-    func parse(data: Data) {
+    func updateTickers(data: Data) {
         if !shouldPause {
             if let tickerData = try? JSONDecoder().decode(Ticker.self, from: data) {
-                //print(tickerData)
                 tickers[tickerData.code] = tickerData
             }
         }
     }
     
     func getKRWMarkets() {
-        guard let url = URL(string: "https://api.upbit.com/v1/market/all?isDetails=false") else { return }
+        guard let url = URL(string: "https://api.upbit.com/v1/market/all") else { return }
         
         URLSession.shared.dataTaskPublisher(for: url)
             .tryMap { (data, response) -> Data in
@@ -98,10 +98,6 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
                 self?.krwMarkets = returnedMarkets.filter { $0.code.hasPrefix("KRW") }
             }
             .store(in: &cancellables)
-    }
-    
-    func getPastData(code: String) {
-        
     }
     
     func pausePublishTickers() {

@@ -17,9 +17,7 @@ struct CandleChartView: View {
     
     var body: some View {
         HStack {
-            Button("테스트") {
-                print(upbitAPIController.getPastData(code: market.code))
-            }
+
         }
         .frame(maxWidth: .infinity)
     }
