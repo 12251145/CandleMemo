@@ -16,7 +16,7 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
     
     private var socket: WebSocket?
     private var cancellables = Set<AnyCancellable>()
-    private var isPause = false
+    private var shouldPause = false
 
 
     init() {
@@ -70,9 +70,9 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
     }
     
     func parse(data: Data) {
-        if !isPause {
+        if !shouldPause {
             if let tickerData = try? JSONDecoder().decode(Ticker.self, from: data) {
-                print(tickerData)
+                //print(tickerData)
                 tickers[tickerData.code] = tickerData
             }
         }
@@ -100,12 +100,16 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
             .store(in: &cancellables)
     }
     
+    func getPastData(code: String) {
+        
+    }
+    
     func pausePublishTickers() {
-        isPause = true
+        shouldPause = true
     }
     
     func resumePublishTickers() {
-        isPause = false
+        shouldPause = false
     }
 }
 

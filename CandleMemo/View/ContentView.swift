@@ -16,6 +16,8 @@ struct ContentView: View {
     var body: some View {
         NavView {
             defaultView
+                .navTitle("코인")
+                .navDate("6월 17일")
         }
     }
     
@@ -37,8 +39,17 @@ extension ContentView {
                 .padding(.leading)
                 
                 ForEach(upbitAPIController.krwMarkets, id: \.self) { market in
+                    
                     RowCellView(market: market)
+                        .background(
+                            NavLink(destination: DetailView(market: market)
+                                    , label: {
+                                RoundedRectangle(cornerRadius: 1, style: .continuous)
+                                    .fill(.clear)
+                            })
+                        )
                 }
+                
             }
             .background(
                 GeometryReader { proxy in

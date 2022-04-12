@@ -23,5 +23,11 @@ extension ContentView {
             
             self.finishDetector = finishDetector
         }
+        
+        func cutKRW(from code: String) -> String {
+            let startIndex: String.Index = code.index(code.startIndex, offsetBy: 4)
+            
+            return "\(code[startIndex...])"
+        }
     }
 }

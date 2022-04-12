@@ -13,7 +13,7 @@ extension VerticalAlignment {
     enum CodePriceAlignment: AlignmentID {
         
         static func defaultValue(in context: ViewDimensions) -> CGFloat {
-            context[.top]
+            context[.bottom]
         }
     }
 

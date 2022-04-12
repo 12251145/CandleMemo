@@ -7,23 +7,21 @@
 
 import SwiftUI
 
-struct RowCellView: View {
+struct RowCellView: View, FormatChanger {
     @EnvironmentObject private var upbitAPIController: UpbitAPIController
-    
-    @StateObject private var viewModel = ViewModel()
     
     let market: Market
     
     var body: some View {
         VStack(spacing: 3) {
             HStack(alignment: .firstTextBaseline) {
-                Text(viewModel.cutKRW(from: market.code))
+                Text(cutKRW(from: market.code))
                     .font(.title2)
                     .fontWeight(.bold)
 
                 Spacer()
                 
-                Text(viewModel.priceFormat(upbitAPIController.tickers[market.code]?.trade_price ?? 0))
+                Text(priceFormat(upbitAPIController.tickers[market.code]?.trade_price ?? 0))
                     .font(.title3)
                     .fontWeight(.semibold)
 
@@ -38,7 +36,7 @@ struct RowCellView: View {
 
                 Spacer()
                 
-                Text(viewModel.rateFormat(upbitAPIController.tickers[market.code]?.signed_change_rate ?? 0))
+                Text(rateFormat(upbitAPIController.tickers[market.code]?.signed_change_rate ?? 0))
                     .font(.footnote)
                     .fontWeight(.semibold)
                     .padding(.horizontal, 5)
