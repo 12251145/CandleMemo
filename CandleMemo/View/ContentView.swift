@@ -19,6 +19,10 @@ struct ContentView: View {
                 .navTitle("코인")
                 .navDate("6월 17일")
         }
+        .onAppear {
+            upbitAPIController.requestKRWMarkets()
+        }
+
     }
     
     struct ViewOffsetKey: PreferenceKey {

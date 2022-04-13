@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DayCandle: Codable, Hashable {
+struct Candle: Codable, Hashable {
     let code: String
     let candleDateTimeUTC: String
     let candleDateTimeKST: String
@@ -17,6 +17,7 @@ struct DayCandle: Codable, Hashable {
     let tradePrice: Double
     let candleAccTradePrice: Double
     let candleAccTradeVolume: Double
+    let firstDayOfPeriod: String
     
     enum CodingKeys: String, CodingKey {
         case code = "market"
@@ -28,5 +29,6 @@ struct DayCandle: Codable, Hashable {
         case tradePrice = "trade_price"
         case candleAccTradePrice = "candle_acc_trade_price"
         case candleAccTradeVolume = "candle_acc_trade_volume"
+        case firstDayOfPeriod = "first_day_of_period"
     }
 }

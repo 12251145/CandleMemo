@@ -17,7 +17,9 @@ struct CandleChartView: View {
     
     var body: some View {
         HStack {
-
+            Button("테스트") {
+                upbitAPIController.requestCandels(code: "KRW-BTC", type: .week)
+            }
         }
         .frame(maxWidth: .infinity)
     }

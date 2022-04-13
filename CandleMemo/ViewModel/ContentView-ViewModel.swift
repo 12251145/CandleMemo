@@ -10,7 +10,6 @@ import SwiftUI
 
 extension ContentView {
     class ViewModel: ObservableObject {
-        
         let finishDetector: CurrentValueSubject<CGFloat, Never>
         let finishPublisher: AnyPublisher<CGFloat, Never>
         

@@ -14,23 +14,23 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
     @Published var krwMarkets: [Market] = []
     @Published var tickers: [String : Ticker] = [:]
     
+    let service = UpbitAPIService()
+    
     private var socket: WebSocket?
-    
     private var cancellables = Set<AnyCancellable>()
-    
     private var shouldPause = false
-
-
-    init() {
-        getKRWMarkets()
-    }
     
+    private var retries = 0
+    
+    let apiQueue = DispatchQueue.init(label: "API")
+
     func webSocketConnect() {
+        
         let url = "wss://api.upbit.com/websocket/v1"
         
         var request = URLRequest(url: URL(string: url)!)
         request.timeoutInterval = 10
-        
+
         socket = WebSocket(request: request, certPinner: FoundationSecurity(allowSelfSigned: true))
         socket?.delegate = self
         socket?.connect()
@@ -44,8 +44,7 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
         switch(event) {
             case .connected(let headers):
                 print(".connected - \(headers)")
-                
-                
+
                 let params = [["ticket":"test"],
                               ["type":"ticker","codes": krwMarkets.map{ $0.code }]]
                     
@@ -54,9 +53,14 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
                 break
             case .disconnected(let reason, let code):
                 print(".disconnected - \(reason), \(code)")
+                
+                if retries < 2 {
+                    webSocketConnect()
+                    retries += 1
+                }
+            
                 break
             case .text(_):
-//                parse(data: string.data(using: .utf8)!)
                 break
             case .binary(let data):
                 updateTickers(data: data)
@@ -78,26 +82,33 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
         }
     }
     
-    func getKRWMarkets() {
-        guard let url = URL(string: "https://api.upbit.com/v1/market/all") else { return }
+    func requestKRWMarkets() {
         
-        URLSession.shared.dataTaskPublisher(for: url)
-            .tryMap { (data, response) -> Data in
-                guard let response = response as? HTTPURLResponse,
-                      response.statusCode >= 200 && response.statusCode < 300 else {
-                    throw URLError(.badServerResponse)
-                }
-                
-                return data
-            }
-            .decode(type: [Market].self, decoder: JSONDecoder())
-            .receive(on: DispatchQueue.main)
+        service.getAllMarkets()
+            .receive(on: RunLoop.main)
             .sink { completion in
-
-            } receiveValue: { [weak self] returnedMarkets in
-                self?.krwMarkets = returnedMarkets.filter { $0.code.hasPrefix("KRW") }
+                switch completion {
+                case .finished:
+                    print(" ")
+                case .failure(let error):
+                    print(error.customMessage)
+                }
+            } receiveValue: { [weak self] markets in
+                self?.krwMarkets = markets.filter { $0.code.hasPrefix("KRW") }
             }
             .store(in: &cancellables)
+        
+    }
+    
+    func requestCandels(code: String, type: CandleType, to: String? = nil, count: String? = "200") {
+        service.getCandles(from: code, type: type, to: to, count: count)
+            .sink { completion in
+                print(completion)
+            } receiveValue: { candles in
+                print(candles.first?.tradePrice ?? 0)
+            }
+            .store(in: &cancellables)
+
     }
     
     func pausePublishTickers() {
