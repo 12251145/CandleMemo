@@ -9,6 +9,6 @@ import Foundation
 
 extension CandleChartView {
     class ViewModel: ObservableObject {
-        // 필요한가?
+        
     }
 }
