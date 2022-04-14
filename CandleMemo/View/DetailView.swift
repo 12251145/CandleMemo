@@ -13,7 +13,7 @@ struct DetailView: View, FormatChanger {
     let market: Market
     
     var body: some View {
-        ScrollView {
+        ScrollView(.vertical, showsIndicators: false) {
             VStack {
                 CandleChartView(market: market)
             }

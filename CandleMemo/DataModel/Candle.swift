@@ -17,7 +17,7 @@ struct Candle: Codable, Hashable {
     let tradePrice: Double
     let candleAccTradePrice: Double
     let candleAccTradeVolume: Double
-    let firstDayOfPeriod: String
+    let firstDayOfPeriod: String?
     
     enum CodingKeys: String, CodingKey {
         case code = "market"
@@ -31,4 +31,6 @@ struct Candle: Codable, Hashable {
         case candleAccTradeVolume = "candle_acc_trade_volume"
         case firstDayOfPeriod = "first_day_of_period"
     }
+    
+    static let dummy = Candle(code: "", candleDateTimeUTC: "", candleDateTimeKST: "", openingPrice: 0, highPrice: 0, lowPrice: 0, tradePrice: 0, candleAccTradePrice: 0, candleAccTradeVolume: 0, firstDayOfPeriod: nil)
 }

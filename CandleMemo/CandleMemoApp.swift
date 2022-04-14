@@ -19,10 +19,6 @@ struct CandleMemoApp: App {
                 .environmentObject(upbitAPIController)
                 .preferredColorScheme(.dark)
                 .onChange(of: scenePhase) { newValue in
-                    if newValue == .inactive || newValue == .background {
-                        upbitAPIController.webSocketDisconnect()
-                    }
-                    
                     if newValue == .active {
                         upbitAPIController.webSocketConnect()
                     }

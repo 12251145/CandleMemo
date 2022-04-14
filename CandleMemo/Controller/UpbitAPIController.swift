@@ -13,6 +13,7 @@ import Starscream
 class UpbitAPIController: ObservableObject, WebSocketDelegate {
     @Published var krwMarkets: [Market] = []
     @Published var tickers: [String : Ticker] = [:]
+    @Published var candles: [String : [Candle]] = [:]
     
     let service = UpbitAPIService()
     
@@ -89,7 +90,7 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
             .sink { completion in
                 switch completion {
                 case .finished:
-                    print(" ")
+                    print("get all markets!")
                 case .failure(let error):
                     print(error.customMessage)
                 }
@@ -100,15 +101,20 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
         
     }
     
-    func requestCandels(code: String, type: CandleType, to: String? = nil, count: String? = "200") {
+    func requestCandles(code: String, type: CandleType, to: String? = nil, count: String? = "200") {
         service.getCandles(from: code, type: type, to: to, count: count)
+            .receive(on: RunLoop.main)
             .sink { completion in
-                print(completion)
-            } receiveValue: { candles in
-                print(candles.first?.tradePrice ?? 0)
+                switch completion {
+                case .finished:
+                    print("get all candles!")
+                case .failure(let error):
+                    print(error.customMessage)
+                }
+            } receiveValue: { [weak self] candles in
+                self?.candles[code] = candles
             }
             .store(in: &cancellables)
-
     }
     
     func pausePublishTickers() {
