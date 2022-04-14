@@ -9,6 +9,6 @@ import Foundation
 
 extension CandleChartView {
     class ViewModel: ObservableObject {
-        
+        // 커밋 오류 테스트
     }
 }
