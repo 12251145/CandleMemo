@@ -44,13 +44,13 @@ struct CandleChartView: View {
                         
                         GeometryReader { geo in
                             RoundedRectangle(cornerRadius: 3)
-                                .fill(.indigo)
+                                .fill(.red)
                         }
                     }
                 }
             }
             .frame(width: size.width, height: UIScreen.main.bounds.height * 0.4)
-            .background(.red)
+            .background(.gray)
             
         }
         .onAppear {
