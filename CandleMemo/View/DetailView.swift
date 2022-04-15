@@ -14,10 +14,17 @@ struct DetailView: View, FormatChanger {
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            VStack {
-                CandleChartView(market: market)
+            HStack {
+                Spacer()
+                Text("캔들 타입 설정")
             }
+            
+            VStack {
+                CandleChartView(market: market, tradePrice: upbitAPIController.tickers[market.code]?.trade_price ?? 0)
+            }
+            
         }
+        
         .navTitle(cutKRW(from: market.code))
         .coinName(market.koreanName)
         .price(priceFormat(upbitAPIController.tickers[market.code]?.trade_price ?? 0))

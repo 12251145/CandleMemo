@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct Candle: Codable, Hashable {
+struct Candle: Codable, Hashable, Identifiable {
+    let id = UUID().uuidString
     let code: String
     let candleDateTimeUTC: String
     let candleDateTimeKST: String

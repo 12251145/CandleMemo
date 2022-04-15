@@ -7,54 +7,81 @@
 
 import SwiftUI
 
+enum CandlePart {
+    case topEmpty
+    case topTail
+    case bar
+    case bottomTail
+    case bottomEmpty
+}
+
 struct CandleChartView: View {
-    // market 정보 받아야함.
-    // 과거 데이터 받아와야 함.
-    // 실시간 가격 반영해서 그래프 그려야 함.
-    // 일, 주, 달 버튼 만들고 터치하면 그래프 변해야 함
-    // 캔들 선택할 수 있게 만들고 메모 추가 할 수 있게 해야함.
-    // 메모는 Core Data 및 Cloudkit에 저장하고 그래프 그릴 때 반영해야 함.
-    
-    //
-    @EnvironmentObject private var upbitAPIController: UpbitAPIController
+    @StateObject private var viewModel = ViewModel()
     
     let market: Market
+    let tradePrice: Double
 
-    @State private var graphSize = 20
-    @State private var graphMoved = 0
-    
     var body: some View {
         GeometryReader { proxy in
             let size = proxy.size
             
             HStack(spacing: 1) {
-                ForEach((upbitAPIController.candles[market.code] ?? Array(repeating: Candle.dummy, count: graphSize))[
-                    0 + graphMoved..<graphSize + graphMoved
-                ].reversed(), id: \.self) { candle in
-                    VStack(spacing: 0) {
-                        GeometryReader { geo in
-                            RoundedRectangle(cornerRadius: 3)
-                                .fill(.blue)
-                        }
+                if !viewModel.currentCandles.isEmpty {
+
+                    ForEach((viewModel.currentCandles)[0 + viewModel.graphMoved..<viewModel.graphSize + viewModel.graphMoved].reversed()) { candle in
                         
                         GeometryReader { geo in
-                            RoundedRectangle(cornerRadius: 3)
-                                .fill(.green)
-                        }
-                        
-                        GeometryReader { geo in
-                            RoundedRectangle(cornerRadius: 3)
-                                .fill(.red)
+                            VStack(spacing: 0) {
+                                
+                                RoundedRectangle(cornerRadius: 2)
+                                    .fill(.clear)
+                                    .frame(height: viewModel.getHeight(part: .topEmpty, graphSize: viewModel.graphSize, graphMoved: viewModel.graphMoved, candle: candle, code: candle.code)
+                                           * geo.size.height)
+                                
+                                RoundedRectangle(cornerRadius: 0)
+                                    .fill(candle.openingPrice < candle.tradePrice ? .pink : .blue)
+                                    .frame(width: 2, height: viewModel.getHeight(part: .topTail, graphSize: viewModel.graphSize, graphMoved: viewModel.graphMoved, candle: candle, code: candle.code, tradePrice: tradePrice)
+                                           * geo.size.height)
+                            
+                                RoundedRectangle(cornerRadius: 2)
+                                    .fill(candle.openingPrice < candle.tradePrice ? .pink : .blue)
+                                    .frame(height: viewModel.getHeight(part: .bar, graphSize: viewModel.graphSize, graphMoved: viewModel.graphMoved, candle: candle, code: candle.code, tradePrice: tradePrice)
+                                           * geo.size.height)
+                                
+                                RoundedRectangle(cornerRadius: 0)
+                                    .fill(candle.openingPrice < candle.tradePrice ? .pink : .blue)
+                                    .frame(width: 2, height: viewModel.getHeight(part: .bottomTail, graphSize: viewModel.graphSize, graphMoved: viewModel.graphMoved, candle: candle, code: candle.code, tradePrice: tradePrice)
+                                           * geo.size.height)
+                            
+                                RoundedRectangle(cornerRadius: 2)
+                                    .fill(.clear)
+                                    .frame(height: viewModel.getHeight(part: .bottomEmpty, graphSize: viewModel.graphSize, graphMoved: viewModel.graphMoved, candle: candle, code: candle.code)
+                                           * geo.size.height)
+                            }
                         }
                     }
+                    
                 }
             }
             .frame(width: size.width, height: UIScreen.main.bounds.height * 0.4)
-            .background(.gray)
+            .background(
+                RoundedRectangle(cornerRadius: 0)
+                    .fill(.black)
+                    .padding(.horizontal, 30)
+                    .gesture(
+                        DragGesture()
+                            .onChanged({ value in
+                                print("Dragging")
+                            })
+                    )
+                    
+            )
             
         }
         .onAppear {
-            upbitAPIController.requestCandles(code: market.code, type: .day, count: "50")
+            viewModel.requestCandles(code: market.code, type: .day, count: "200")
         }
     }
 }
+
+
