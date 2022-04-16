@@ -21,7 +21,7 @@ struct RowCellView: View, FormatChanger {
 
                 Spacer()
                 
-                Text(priceFormat(upbitAPIController.tickers[market.code]?.trade_price ?? 0))
+                Text(priceFormat(upbitAPIController.tickers[market.code]?.tradePrice ?? 0))
                     .font(.title3)
                     .fontWeight(.semibold)
 
@@ -36,7 +36,7 @@ struct RowCellView: View, FormatChanger {
 
                 Spacer()
                 
-                Text(rateFormat(upbitAPIController.tickers[market.code]?.signed_change_rate ?? 0))
+                Text(rateFormat(upbitAPIController.tickers[market.code]?.signedChangeRate ?? 0))
                     .font(.footnote)
                     .fontWeight(.semibold)
                     .padding(.horizontal, 5)

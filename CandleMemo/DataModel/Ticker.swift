@@ -10,11 +10,27 @@ import Foundation
 struct Ticker: Codable {
     let type: String
     let code: String
-    let opening_price: Double
-    let high_price: Double
-    let low_price: Double
-    let trade_price: Double
+    let openingPrice: Double
+    let highPrice: Double
+    let lowPrice: Double
+    let tradePrice: Double
     let change: String
-    let signed_change_price: Double
-    let signed_change_rate: Double
+    let signedChangePrice: Double
+    let signedChangeRate: Double
+    let tradeDate: String
+    let tradeTime: String
+    
+    enum CodingKeys: String, CodingKey {
+        case type = "type"
+        case code = "code"
+        case openingPrice = "opening_price"
+        case highPrice = "high_price"
+        case lowPrice = "low_price"
+        case tradePrice = "trade_price"
+        case change = "change"
+        case signedChangePrice = "signed_change_price"
+        case signedChangeRate = "signed_change_rate"
+        case tradeDate = "trade_date"
+        case tradeTime = "trade_time"
+    }
 }
