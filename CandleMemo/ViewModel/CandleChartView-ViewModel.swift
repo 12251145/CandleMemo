@@ -12,9 +12,11 @@ import SwiftUI
 extension CandleChartView {
     class ViewModel: ObservableObject {
         @Published var currentCandles: [Candle] = []
-        @Published var graphSize = 40
+        @Published var graphSize = 30
         @Published var graphMoved = 0
         @Published var currentCandleType = CandleType.day
+        
+        @Published var ex = 0
         
         let service = CandleChartService()
         
@@ -79,7 +81,6 @@ extension CandleChartView {
         
         func getHeight(part: CandlePart, graphSize: Int, graphMoved: Int, candle: Candle, code: String, ticker: Ticker) -> CGFloat {
             if currentCandles.isEmpty { return 0 }
-            
 
             if ticker.tradeDate != currentDate {
                 currentDate = ticker.tradeDate
@@ -124,6 +125,7 @@ extension CandleChartView {
         
         func changeCandleType(to: CandleType, code: String) {
             if to != currentCandleType {
+                graphMoved = 0
                 currentCandles = []
                 requestCandles(code: code, type: to, count: "200")
                 currentCandleType = to

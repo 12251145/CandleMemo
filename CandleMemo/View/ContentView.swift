@@ -8,10 +8,15 @@
 import Combine
 import SwiftUI
 
+struct ViewOffsetKey: PreferenceKey {
+    static var defaultValue = CGFloat.zero
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value += nextValue()
+    }
+}
+
 struct ContentView: View {
     @EnvironmentObject private var upbitAPIController: UpbitAPIController
-    
-    @StateObject private var viewModel = ViewModel()
     
     var body: some View {
         NavView {
@@ -21,14 +26,6 @@ struct ContentView: View {
         }
         .onAppear {
             upbitAPIController.requestKRWMarkets()
-        }
-
-    }
-    
-    struct ViewOffsetKey: PreferenceKey {
-        static var defaultValue = CGFloat.zero
-        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-            value += nextValue()
         }
     }
 }
@@ -47,26 +44,28 @@ extension ContentView {
                     RowCellView(market: market)
                         .background(
                             NavLink(destination: DetailView(market: market)
-                                    , label: {
-                                RoundedRectangle(cornerRadius: 1, style: .continuous)
-                                    .fill(.clear)
+                            
+                                        , label: {
+                                    RoundedRectangle(cornerRadius: 1, style: .continuous)
+                                        .fill(.clear)
                             })
                         )
+                    
                 }
                 
             }
             .background(
                 GeometryReader { proxy in
-                    Color.clear.preference(key: ViewOffsetKey.self, value: -proxy.frame(in: .named("scroll")).origin.y)
+                    Color.clear.preference(key: ViewOffsetKey.self, value: -proxy.frame(in: .named("contentScroll")).origin.y)
                 }
             )
             .onPreferenceChange(ViewOffsetKey.self) {
                 upbitAPIController.pausePublishTickers()
-                viewModel.finishDetector.send($0)
+                upbitAPIController.finishDetector.send($0)
             }
         }
-        .coordinateSpace(name: "scroll")
-        .onReceive(viewModel.finishPublisher) { _ in
+        .coordinateSpace(name: "contentScroll")
+        .onReceive(upbitAPIController.finishPublisher) { _ in
             upbitAPIController.resumePublishTickers()
         }
     }

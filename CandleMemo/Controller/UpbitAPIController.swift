@@ -14,12 +14,25 @@ class UpbitAPIController: ObservableObject, WebSocketDelegate {
     @Published var krwMarkets: [Market] = []
     @Published var tickers: [String : Ticker] = [:]
     
-    let service = UpbitAPIService()
-    
     private var socket: WebSocket?
     private var cancellables = Set<AnyCancellable>()
     private var shouldPause = false
     private var retries = 0
+    
+    let service = UpbitAPIService()
+    
+    let finishDetector: CurrentValueSubject<CGFloat, Never>
+    let finishPublisher: AnyPublisher<CGFloat, Never>
+    
+    init() {
+        let finishDetector = CurrentValueSubject<CGFloat, Never>(0)
+        
+        self.finishPublisher = finishDetector
+            .debounce(for: .seconds(0.2), scheduler: DispatchQueue.main)
+            .eraseToAnyPublisher()
+        
+        self.finishDetector = finishDetector
+    }
 
     func webSocketConnect() {
         
