@@ -16,7 +16,13 @@ struct ViewOffsetKey: PreferenceKey {
 }
 
 struct ContentView: View {
-    @EnvironmentObject private var upbitAPIController: UpbitAPIController
+    @Environment(\.scenePhase) var scenePhase
+    
+    @StateObject private var viewModel = ViewModel()
+    
+    init(){
+        print("ContentView init")
+    }
     
     var body: some View {
         NavView {
@@ -24,8 +30,14 @@ struct ContentView: View {
                 .navTitle("코인")
                 .navDate("6월 17일")
         }
+        .environmentObject(viewModel)
         .onAppear {
-            upbitAPIController.requestKRWMarkets()
+            viewModel.requestKRWMarkets()
+        }
+        .onChange(of: scenePhase) { newValue in
+            if newValue == .active {
+                viewModel.webSocketConnect()
+            }
         }
     }
 }
@@ -39,20 +51,18 @@ extension ContentView {
                 }
                 .padding(.leading)
                 
-                ForEach(upbitAPIController.krwMarkets, id: \.self) { market in
+                ForEach(viewModel.krwMarkets, id: \.self) { market in
                     
-                    RowCellView(market: market)
-                        .background(
-                            NavLink(destination: DetailView(market: market)
-                            
-                                        , label: {
+                    if viewModel.tickers[market.code] != nil {
+                        CoinCellView(market: market, ticker: viewModel.tickers[market.code]!)
+                            .background(
+                                NavLink(destination: DetailView(market: market, ticker: viewModel.tickers[market.code]!), label: {
                                     RoundedRectangle(cornerRadius: 1, style: .continuous)
                                         .fill(.clear)
-                            })
-                        )
-                    
+                                })
+                            )
+                    }
                 }
-                
             }
             .background(
                 GeometryReader { proxy in
@@ -60,13 +70,13 @@ extension ContentView {
                 }
             )
             .onPreferenceChange(ViewOffsetKey.self) {
-                upbitAPIController.pausePublishTickers()
-                upbitAPIController.finishDetector.send($0)
+                viewModel.pausePublishTickers()
+                viewModel.finishDetector.send($0)
             }
         }
         .coordinateSpace(name: "contentScroll")
-        .onReceive(upbitAPIController.finishPublisher) { _ in
-            upbitAPIController.resumePublishTickers()
+        .onReceive(viewModel.finishPublisher) { _ in
+            viewModel.resumePublishTickers()
         }
     }
 }

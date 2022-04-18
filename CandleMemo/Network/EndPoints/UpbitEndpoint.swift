@@ -7,15 +7,9 @@
 
 import Foundation
 
-enum CandleType: String {
-    case day = "days"
-    case week = "weeks"
-    case month = "months"
-}
-
 enum UpbitEndpoint {
     case market
-    case candles(candleType: CandleType, market: String, to: String?, count: String?)
+    case candles(market: String, to: String?, count: String?)
 }
 
 extension UpbitEndpoint: Endpoint {
@@ -23,8 +17,8 @@ extension UpbitEndpoint: Endpoint {
         switch self {
         case .market:
             return baseURL + "market/all"
-        case .candles(candleType: let candleType, market: let market, to: let to, count: let count):
-            var components = URLComponents(string: baseURL + "candles/" + candleType.rawValue)
+        case .candles(market: let market, to: let to, count: let count):
+            var components = URLComponents(string: baseURL + "candles/days")
             
             let market = URLQueryItem(name: "market", value: market)
             let to = URLQueryItem(name: "to", value: to)
