@@ -13,8 +13,6 @@ struct CandleChartView: View {
     let market: Market
     let ticker: Ticker
     
-    
-    
     init(market: Market, ticker: Ticker) {
         self.market = market
         self.ticker = ticker
@@ -40,16 +38,10 @@ struct CandleChartView: View {
                                         .fill(.clear)
                                         .frame(height: ((viewModel.groupHigh - candle.highPrice) / (viewModel.groupHigh - viewModel.groupLow)) * size.height)
                                     
-                                    if viewModel.currentCandles[viewModel.graphSize - Int(viewModel.sliderLocation) + viewModel.graphMoved].candleDateTimeKST == candle.candleDateTimeKST {
-                                        Image(systemName: "arrowtriangle.down.fill")
-                                            .foregroundColor(.white)
-                                            .frame(width: 1, height: 7)
-                                            .offset(y: -5)
-                                    }
-                                    
                                     CandleShape(openingPrice: candle.openingPrice, tradePrice: ticker.tradePrice, highPrice: candle.highPrice, lowPrice: candle.lowPrice)
                                         .fill(candle.openingPrice > ticker.tradePrice ? .blue : .pink)
                                         .frame(height: ((candle.highPrice - candle.lowPrice) / (viewModel.groupHigh - viewModel.groupLow)) * size.height)
+                                        .border(viewModel.currentCandles[viewModel.graphSize - Int(viewModel.sliderLocation) + viewModel.graphMoved].candleDateTimeKST == candle.candleDateTimeKST ? .white : .clear, width: 1)
                                     
                                     Rectangle()
                                         .fill(.clear)
@@ -61,16 +53,10 @@ struct CandleChartView: View {
                                         .fill(.clear)
                                         .frame(height: ((viewModel.groupHigh - candle.highPrice) / (viewModel.groupHigh - viewModel.groupLow)) * size.height)
                                     
-                                    if viewModel.currentCandles[viewModel.graphSize - Int(viewModel.sliderLocation) + viewModel.graphMoved].candleDateTimeKST == candle.candleDateTimeKST {
-                                        Image(systemName: "arrowtriangle.down.fill")
-                                            .foregroundColor(.white)
-                                            .frame(width: 1, height: 5)
-                                            .offset(y: -5)
-                                    }
-                                    
                                     CandleShape(openingPrice: candle.openingPrice, tradePrice: candle.tradePrice, highPrice: candle.highPrice, lowPrice: candle.lowPrice)
                                         .fill(candle.openingPrice > candle.tradePrice ? .blue : .pink)
                                         .frame(height: ((candle.highPrice - candle.lowPrice) / (viewModel.groupHigh - viewModel.groupLow)) * size.height)
+                                        .border(viewModel.currentCandles[viewModel.graphSize - Int(viewModel.sliderLocation) + viewModel.graphMoved].candleDateTimeKST == candle.candleDateTimeKST ? .white : .clear, width: 1)
                                     
                                     Rectangle()
                                         .fill(.clear)
@@ -82,11 +68,12 @@ struct CandleChartView: View {
                     }
                 }
             }
-            .frame(height: UIScreen.main.bounds.height * 0.35)
+            .frame(height: viewModel.candleChartHeight)
             .padding(.top, 15)
-            .background(
+            .overlay(
                 RoundedRectangle(cornerRadius: 0)
-                    .fill(.black)
+                    .fill(.clear)
+                    .contentShape(Rectangle())
                     .padding(.horizontal, 30)
                     .gesture(
                         DragGesture()
@@ -114,8 +101,17 @@ struct CandleChartView: View {
 
             Slider(value: $viewModel.sliderLocation, in: 1...Float(viewModel.graphSize), step: 1)
                 .tint(Color.init(uiColor: .systemGray5))
-                .padding(.horizontal, 20)
-                .padding(.top, 30)
+                .padding(.horizontal, 15)
+                .padding(.top, 10)
+            
+            HStack {
+                Capsule()
+                    .fill(Color.init(uiColor: .systemGray2))
+                    .frame(width: 50, height: 5)
+                    .padding(.vertical, 5)
+            }
+            .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
         }
         .onAppear {
             viewModel.requestCandles(code: market.code, count: "200")

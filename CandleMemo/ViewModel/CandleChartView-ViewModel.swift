@@ -12,7 +12,7 @@ import SwiftUI
 extension CandleChartView {
     class ViewModel: ObservableObject {
         @Published var currentCandles: [Candle] = []
-        @Published var graphSize = 40
+        @Published var graphSize = 30
         @Published var graphMoved = 0 {
             didSet {
                 groupHigh = getGroupHigh()
@@ -24,6 +24,7 @@ extension CandleChartView {
         @Published var groupLow: CGFloat = 1
         @Published var sliderLocation: Float = 1
         @Published var isShowingSheet = false
+        @Published var candleChartHeight = UIScreen.main.bounds.height * 0.35
         
         private let service = CandleChartService()
         

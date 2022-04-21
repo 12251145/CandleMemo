@@ -51,8 +51,7 @@ struct DetailView: View, FormatChanger {
                                 }
                                 .padding(.vertical, 10)
                             }
-                           
-
+                            .listRowSeparator(.hidden)
                         }
                     }
                     .listStyle(.plain)
