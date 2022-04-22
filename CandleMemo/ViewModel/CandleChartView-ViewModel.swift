@@ -27,9 +27,7 @@ extension CandleChartView {
         @Published var candleChartHeight = UIScreen.main.bounds.height * 0.35
         
         private let service = CandleChartService()
-        
-        
-        
+
         private var cancellables = Set<AnyCancellable>()
         
         func requestCandles(code: String, to: String? = nil, count: String? = "200") {

@@ -30,7 +30,6 @@
 		6AA38C842805CA6100B37155 /* RequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA38C832805CA6100B37155 /* RequestError.swift */; };
 		6AA38C862805CAF700B37155 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA38C852805CAF700B37155 /* HTTPClient.swift */; };
 		6AA38C8B2805E89900B37155 /* UpbitEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA38C8A2805E89900B37155 /* UpbitEndpoint.swift */; };
-		6AA38C8F2806F66100B37155 /* UpbitAPiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA38C8E2806F66100B37155 /* UpbitAPiService.swift */; };
 		6AA38C912808359800B37155 /* CandleChartView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA38C902808359800B37155 /* CandleChartView-ViewModel.swift */; };
 		6AC1A4BD280C0AA5000B9994 /* ContentView-Viewmodel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC1A4BC280C0AA5000B9994 /* ContentView-Viewmodel.swift */; };
 		6AC1A4C0280C6AFF000B9994 /* CandleShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC1A4BF280C6AFF000B9994 /* CandleShape.swift */; };
@@ -60,7 +59,6 @@
 		6AA38C832805CA6100B37155 /* RequestError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestError.swift; sourceTree = "<group>"; };
 		6AA38C852805CAF700B37155 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		6AA38C8A2805E89900B37155 /* UpbitEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpbitEndpoint.swift; sourceTree = "<group>"; };
-		6AA38C8E2806F66100B37155 /* UpbitAPiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpbitAPiService.swift; sourceTree = "<group>"; };
 		6AA38C902808359800B37155 /* CandleChartView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CandleChartView-ViewModel.swift"; sourceTree = "<group>"; };
 		6AC1A4BC280C0AA5000B9994 /* ContentView-Viewmodel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView-Viewmodel.swift"; sourceTree = "<group>"; };
 		6AC1A4BF280C6AFF000B9994 /* CandleShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandleShape.swift; sourceTree = "<group>"; };
@@ -202,7 +200,6 @@
 			isa = PBXGroup;
 			children = (
 				6A1AEB7F280917AD00B211D0 /* CandleChartService.swift */,
-				6AA38C8E2806F66100B37155 /* UpbitAPiService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -286,7 +283,6 @@
 				6A2865B62802F1110046F76A /* NavView.swift in Sources */,
 				6A902690280070AD005826FC /* ContentView.swift in Sources */,
 				6A9026DF28011F8C005826FC /* Ticker.swift in Sources */,
-				6AA38C8F2806F66100B37155 /* UpbitAPiService.swift in Sources */,
 				6A2D638A2804417C006C0986 /* CandleChartView.swift in Sources */,
 				6A1AEB80280917AD00B211D0 /* CandleChartService.swift in Sources */,
 				6AA38C862805CAF700B37155 /* HTTPClient.swift in Sources */,
