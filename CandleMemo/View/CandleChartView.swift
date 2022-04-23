@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CandleChartView: View {
-    @StateObject private var viewModel = ViewModel()
+    @StateObject private var viewModel = CandleChartViewViewModel()
 
     let market: Market
     let ticker: Ticker

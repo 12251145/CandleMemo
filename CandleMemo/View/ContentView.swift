@@ -18,7 +18,7 @@ struct ViewOffsetKey: PreferenceKey {
 struct ContentView: View {
     @Environment(\.scenePhase) var scenePhase
     
-    @StateObject private var viewModel = ViewModel()
+    @StateObject private var viewModel = ContentViewViewModel()
     
     init(){
         print("ContentView init")

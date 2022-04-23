@@ -16,11 +16,11 @@ protocol WebsocketManagerProtocol {
     func updateTickers(data: Data)
 }
 
-protocol UpbitRestAPIServiceable {
+protocol ContentViewModelProtocol {
     func getAllMarkets() -> AnyPublisher<[Market], RequestError>
 }
 
-final class ContentViewViewModel: ObservableObject {
+final class ContentViewViewModel: HTTPClient, ObservableObject {
     @Published var krwMarkets: [Market] = []
     @Published var tickers: [String : Ticker] = [:]
     
@@ -130,7 +130,7 @@ extension ContentViewViewModel: WebsocketManagerProtocol {
     }
 }
 
-extension ContentViewViewModel: HTTPClient, UpbitRestAPIServiceable {
+extension ContentViewViewModel: ContentViewModelProtocol {
     func getAllMarkets() -> AnyPublisher<[Market], RequestError> {
         return sendRequest(endpoint: UpbitEndpoint.market)
     }
