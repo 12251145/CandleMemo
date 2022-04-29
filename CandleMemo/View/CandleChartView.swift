@@ -103,21 +103,9 @@ struct CandleChartView: View {
                 .tint(Color.init(uiColor: .systemGray5))
                 .padding(.horizontal, 15)
                 .padding(.top, 10)
-            
-            HStack {
-                Capsule()
-                    .fill(Color.init(uiColor: .systemGray2))
-                    .frame(width: 50, height: 5)
-                    .padding(.vertical, 5)
-            }
-            .frame(maxWidth: .infinity)
-            .contentShape(Rectangle())
         }
         .onAppear {
             viewModel.requestCandles(code: market.code, count: "200")
-        }
-        .sheet(isPresented: $viewModel.isShowingSheet) {
-            Text("HI")
         }
     }
 }

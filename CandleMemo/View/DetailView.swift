@@ -94,6 +94,7 @@ struct DetailView: View, FormatChanger {
         .navTitle(cutKRW(from: market.code))
         .coinName(market.koreanName)
         .price(priceFormat(ticker.tradePrice))
+        
     }
 }
 

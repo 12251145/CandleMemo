@@ -32,7 +32,6 @@ class CandleChartViewViewModel: HTTPClient, ObservableObject {
     @Published var groupHigh: CGFloat = 1
     @Published var groupLow: CGFloat = 1
     @Published var sliderLocation: Float = 1
-    @Published var isShowingSheet = false
     @Published var candleChartHeight = UIScreen.main.bounds.height * 0.35
     
     private let service = CandleChartService()
