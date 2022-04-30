@@ -12,12 +12,6 @@ struct DetailView: View, FormatChanger {
     let market: Market
     let ticker: Ticker
     
-    private let floatingButtonSize: CGFloat = 18
-    private let floatingButtonMarginx: CGFloat = 40
-    private let floatingButtonMarginy: CGFloat = 40
-    private let floatingButtonMarginx2: CGFloat = 40
-    private let floatingButtonMarginy2: CGFloat = 120
-    
     init(market: Market, ticker: Ticker) {
         self.market = market
         self.ticker = ticker
@@ -28,7 +22,7 @@ struct DetailView: View, FormatChanger {
         
         GeometryReader { proxy in
             ZStack {
-                VStack {
+                HStack {
                     CandleChartView(market: market, ticker: ticker)
                 }
             }

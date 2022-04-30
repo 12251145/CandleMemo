@@ -31,6 +31,15 @@ extension FormatChanger {
         return numberFormatter.string(for: price)!
     }
     
+    func noFractionDigits(_ price: Double) -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        numberFormatter.maximumFractionDigits = 0
+        numberFormatter.minimumFractionDigits = 0
+        
+        return numberFormatter.string(for: price)!
+    }
+    
     func rateFormat(_ number: Double) -> String {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .percent

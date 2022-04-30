@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6A1AEB80280917AD00B211D0 /* CandleChartService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1AEB7F280917AD00B211D0 /* CandleChartService.swift */; };
 		6A2865A928029C600046F76A /* CoinCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2865A828029C600046F76A /* CoinCellView.swift */; };
 		6A2865B02802E31E0046F76A /* NavBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2865AF2802E31E0046F76A /* NavBarView.swift */; };
 		6A2865B42802EF220046F76A /* NavBarContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2865B32802EF220046F76A /* NavBarContainerView.swift */; };
@@ -36,7 +35,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6A1AEB7F280917AD00B211D0 /* CandleChartService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandleChartService.swift; sourceTree = "<group>"; };
 		6A2865A828029C600046F76A /* CoinCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinCellView.swift; sourceTree = "<group>"; };
 		6A2865AF2802E31E0046F76A /* NavBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarView.swift; sourceTree = "<group>"; };
 		6A2865B32802EF220046F76A /* NavBarContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarContainerView.swift; sourceTree = "<group>"; };
@@ -170,7 +168,6 @@
 		6AA38C7D2805C26300B37155 /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				6AC1A4BE280C6AC5000B9994 /* Service */,
 				6AA38C872805D28A00B37155 /* EndPoints */,
 				6AA38C7E2805C26C00B37155 /* Base */,
 			);
@@ -194,14 +191,6 @@
 				6AA38C8A2805E89900B37155 /* UpbitEndpoint.swift */,
 			);
 			path = EndPoints;
-			sourceTree = "<group>";
-		};
-		6AC1A4BE280C6AC5000B9994 /* Service */ = {
-			isa = PBXGroup;
-			children = (
-				6A1AEB7F280917AD00B211D0 /* CandleChartService.swift */,
-			);
-			path = Service;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -284,7 +273,6 @@
 				6A902690280070AD005826FC /* ContentView.swift in Sources */,
 				6A9026DF28011F8C005826FC /* Ticker.swift in Sources */,
 				6A2D638A2804417C006C0986 /* CandleChartView.swift in Sources */,
-				6A1AEB80280917AD00B211D0 /* CandleChartService.swift in Sources */,
 				6AA38C862805CAF700B37155 /* HTTPClient.swift in Sources */,
 				6A90268E280070AD005826FC /* CandleMemoApp.swift in Sources */,
 				6A2D638F28055E02006C0986 /* FormatChanger.swift in Sources */,

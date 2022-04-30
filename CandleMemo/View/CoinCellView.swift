@@ -22,13 +22,13 @@ struct CoinCellView: View, FormatChanger {
         HStack(spacing: 5) {
             CandleShape(openingPrice: ticker.openingPrice, tradePrice: ticker.tradePrice, highPrice: ticker.highPrice, lowPrice: ticker.lowPrice)
                 .fill(ticker.openingPrice < ticker.tradePrice ? .pink : .blue)
-                .frame(width: 12, height: 45)
+                .frame(width: 8, height: 35)
                 
             
-            VStack(spacing: 3) {
+            VStack(spacing: 5) {
                 HStack(alignment: .firstTextBaseline) {
                     Text(cutKRW(from: market.code))
-                        .font(.title2)
+                        .font(.title3)
                         .fontWeight(.bold)
 
                     Spacer()

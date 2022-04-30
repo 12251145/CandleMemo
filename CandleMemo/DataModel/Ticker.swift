@@ -34,5 +34,9 @@ struct Ticker: Codable {
         case tradeTime = "trade_time"
     }
     
-    static var dummy = Ticker(type: "N", code: "N", openingPrice: 0, highPrice: 0, lowPrice: 0, tradePrice: 0, change: "EVEN", signedChangePrice: 0, signedChangeRate: 0, tradeDate: "-", tradeTime: "-")
+    
+}
+
+extension Ticker: Equatable {
+    
 }
