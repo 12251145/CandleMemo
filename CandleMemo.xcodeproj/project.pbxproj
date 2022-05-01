@@ -13,10 +13,11 @@
 		6A2865B62802F1110046F76A /* NavView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2865B52802F1110046F76A /* NavView.swift */; };
 		6A2865B82803172E0046F76A /* NavLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2865B72803172E0046F76A /* NavLink.swift */; };
 		6A2865BA28031EDF0046F76A /* NavBarPreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2865B928031EDF0046F76A /* NavBarPreferenceKeys.swift */; };
-		6A2D638628040EA6006C0986 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2D638528040EA5006C0986 /* DetailView.swift */; };
 		6A2D638A2804417C006C0986 /* CandleChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2D63892804417C006C0986 /* CandleChartView.swift */; };
 		6A2D638C280445B0006C0986 /* Candle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2D638B280445B0006C0986 /* Candle.swift */; };
 		6A2D638F28055E02006C0986 /* FormatChanger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2D638E28055E02006C0986 /* FormatChanger.swift */; };
+		6A527934281E444E004E0FE4 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A527933281E444D004E0FE4 /* DetailView.swift */; };
+		6A527936281E45BD004E0FE4 /* DetailView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A527935281E45BD004E0FE4 /* DetailView-ViewModel.swift */; };
 		6A90268E280070AD005826FC /* CandleMemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A90268D280070AD005826FC /* CandleMemoApp.swift */; };
 		6A902690280070AD005826FC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A90268F280070AD005826FC /* ContentView.swift */; };
 		6A902692280070AE005826FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A902691280070AE005826FC /* Assets.xcassets */; };
@@ -41,10 +42,11 @@
 		6A2865B52802F1110046F76A /* NavView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavView.swift; sourceTree = "<group>"; };
 		6A2865B72803172E0046F76A /* NavLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavLink.swift; sourceTree = "<group>"; };
 		6A2865B928031EDF0046F76A /* NavBarPreferenceKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarPreferenceKeys.swift; sourceTree = "<group>"; };
-		6A2D638528040EA5006C0986 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		6A2D63892804417C006C0986 /* CandleChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandleChartView.swift; sourceTree = "<group>"; };
 		6A2D638B280445B0006C0986 /* Candle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Candle.swift; sourceTree = "<group>"; };
 		6A2D638E28055E02006C0986 /* FormatChanger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatChanger.swift; sourceTree = "<group>"; };
+		6A527933281E444D004E0FE4 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		6A527935281E45BD004E0FE4 /* DetailView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DetailView-ViewModel.swift"; sourceTree = "<group>"; };
 		6A90268A280070AD005826FC /* CandleMemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CandleMemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A90268D280070AD005826FC /* CandleMemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandleMemoApp.swift; sourceTree = "<group>"; };
 		6A90268F280070AD005826FC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -139,8 +141,9 @@
 			children = (
 				6A90268F280070AD005826FC /* ContentView.swift */,
 				6A2865A828029C600046F76A /* CoinCellView.swift */,
-				6A2D638528040EA5006C0986 /* DetailView.swift */,
 				6A2D63892804417C006C0986 /* CandleChartView.swift */,
+				6A527933281E444D004E0FE4 /* DetailView.swift */,
+				6A527935281E45BD004E0FE4 /* DetailView-ViewModel.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -274,11 +277,13 @@
 				6A9026DF28011F8C005826FC /* Ticker.swift in Sources */,
 				6A2D638A2804417C006C0986 /* CandleChartView.swift in Sources */,
 				6AA38C862805CAF700B37155 /* HTTPClient.swift in Sources */,
+				6A527934281E444E004E0FE4 /* DetailView.swift in Sources */,
 				6A90268E280070AD005826FC /* CandleMemoApp.swift in Sources */,
 				6A2D638F28055E02006C0986 /* FormatChanger.swift in Sources */,
 				6A9026DB28011025005826FC /* Market.swift in Sources */,
 				6AA38C802805C28300B37155 /* Endpoint.swift in Sources */,
 				6A2865B02802E31E0046F76A /* NavBarView.swift in Sources */,
+				6A527936281E45BD004E0FE4 /* DetailView-ViewModel.swift in Sources */,
 				6A2D638C280445B0006C0986 /* Candle.swift in Sources */,
 				6AA38C8B2805E89900B37155 /* UpbitEndpoint.swift in Sources */,
 				6A2865BA28031EDF0046F76A /* NavBarPreferenceKeys.swift in Sources */,
@@ -286,7 +291,6 @@
 				6AA38C842805CA6100B37155 /* RequestError.swift in Sources */,
 				6AA38C912808359800B37155 /* CandleChartView-ViewModel.swift in Sources */,
 				6A2865A928029C600046F76A /* CoinCellView.swift in Sources */,
-				6A2D638628040EA6006C0986 /* DetailView.swift in Sources */,
 				6AC1A4C0280C6AFF000B9994 /* CandleShape.swift in Sources */,
 				6AC1A4BD280C0AA5000B9994 /* ContentView-Viewmodel.swift in Sources */,
 				6AA38C822805C9E800B37155 /* RequestMethod.swift in Sources */,

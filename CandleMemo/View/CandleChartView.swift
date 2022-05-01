@@ -12,7 +12,7 @@ struct CandleChartView: View {
 
     let market: Market
     let ticker: Ticker
-    
+
     init(market: Market, ticker: Ticker) {
         self.market = market
         self.ticker = ticker
@@ -26,14 +26,14 @@ struct CandleChartView: View {
 
         VStack(spacing: 0) {
             HStack(alignment: .top, spacing: 1) {
+                // 캔들 차트
                 HStack(spacing: 1) {
-                    if !viewModel.currentCandles.isEmpty {
+                    if !viewModel.currentDisplayingCandles.isEmpty {
                         ForEach(viewModel.currentDisplayingCandles) { candle in
                             GeometryReader { proxy in
                                 let size = proxy.size
 
                                 VStack(alignment: .center, spacing: 0) {
-                                    
                                     
                                     Rectangle()
                                         .fill(.clear)
@@ -42,13 +42,11 @@ struct CandleChartView: View {
                                     CandleShape(openingPrice: candle.openingPrice, tradePrice: candle.tradePrice, highPrice: candle.highPrice, lowPrice: candle.lowPrice)
                                         .fill(candle.openingPrice > candle.tradePrice ? .blue : .pink)
                                         .frame(height: ((candle.highPrice - candle.lowPrice) / (viewModel.groupHigh - viewModel.groupLow)) * size.height)
-                                        .border(viewModel.currentCandles[viewModel.graphSize - Int(viewModel.sliderLocation) + viewModel.graphMoved].candleDateTimeKST == candle.candleDateTimeKST ? .white : .clear, width: 1)
+                                        .border(viewModel.currentDisplayingCandles[Int(viewModel.sliderLocation)].candleDateTimeKST == candle.candleDateTimeKST ? .white : .clear, width: 1)
                                     
                                     Rectangle()
                                         .fill(.clear)
                                         .frame(height: ((candle.lowPrice - viewModel.groupLow) / (viewModel.groupHigh - viewModel.groupLow)) * size.height)
-                                        
-                                    
                                 }
                             }
                         }
@@ -84,6 +82,8 @@ struct CandleChartView: View {
                         )
                     )
                 
+                
+                // 가격 표시
                 ZStack {
                     if !viewModel.currentDisplayingCandles.isEmpty {
                         GeometryReader { proxy in
@@ -163,20 +163,68 @@ struct CandleChartView: View {
                     }
                 }
                 .frame(width: 50, height: viewModel.candleChartHeight)
+                
             }
+            
+            // 날짜 표시
+            HStack {
+                if !viewModel.currentDisplayingCandles.isEmpty {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                            .fill(Color.init(uiColor: .systemGray6))
+                            .frame(width: 100, height: 20)
 
-            Slider(value: $viewModel.sliderLocation, in: 1...Float(viewModel.graphSize), step: 1)
-                .tint(Color.init(uiColor: .systemGray5))
-                .padding(.horizontal, 15)
-                .padding(.top, 10)
+
+                        Text("22-04-26")
+                            .foregroundColor(.white)
+                            .font(.system(size: 12))
+                            .fontWeight(.semibold)
+                    }
+                }
+            }
+            .padding(.top, 10)
+            
+            HStack(spacing: 1) {
+                // 캔들 선택 슬라이더
+                Slider(value: $viewModel.sliderLocation, in: 0...(Float(viewModel.graphSize) - 1), step: 1)
+                    .tint(Color.init(uiColor: .systemGray5))
+                    .padding(.horizontal, 15)
+                
+                // 메모 추가 버튼
+                Button {
+                    
+                } label: {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(Color.init(uiColor: .systemGray6))
+                            .frame(width: 40, height: 40)
+                            .padding(5)
+                        
+                        Image(systemName: "plus")
+                            .font(.title3)
+                            .foregroundColor(Color.init(white: 0.9))
+                        
+                    }
+                }
+            }
+            .padding(.top, 20)
+            
+            // 핸들
+            HStack {
+                Capsule()
+                    .fill(Color.init(white: 0.9))
+                    .frame(width: 50, height: 5)
+                    .padding(.bottom, 5)
+            }
+            .frame(width: UIScreen.main.bounds.width, height: 25)
         }
-        .padding(.top, 15)
         .onAppear {            
             viewModel.requestCandles(code: market.code, count: "200")
         }
         .onChange(of: CandleChartViewViewModel.ticker) { _ in
             viewModel.updateTicker()
         }
+        
     }
 }
 

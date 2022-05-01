@@ -39,7 +39,8 @@ class CandleChartViewViewModel: HTTPClient, ObservableObject {
     @Published var ex = 0
     @Published var groupHigh: CGFloat = 1
     @Published var groupLow: CGFloat = 1
-    @Published var sliderLocation: Float = 1
+    
+    @Published var sliderLocation: Float = 0
     @Published var candleChartHeight = UIScreen.main.bounds.height * 0.27
     
     init() {
@@ -66,7 +67,7 @@ class CandleChartViewViewModel: HTTPClient, ObservableObject {
                 self?.groupHigh = self?.getGroupHigh() ?? 1
                 self?.groupLow = self?.getGroupLow() ?? 1
                 
-                self?.sliderLocation = 1
+                self?.sliderLocation = 0
             }
             .store(in: &cancellables)
     }
