@@ -29,21 +29,50 @@ final class ContentViewViewModel: HTTPClient, ObservableObject {
     private var shouldPause = false
     private var retries = 0
 
+    let scrollingSubject: PassthroughSubject<Void, Never>
+    let scrollingPublisher: AnyPublisher<Void, Never>
     
-    let finishDetector: CurrentValueSubject<CGFloat, Never>
-    let finishPublisher: AnyPublisher<CGFloat, Never>
+    let scrollEndSubject: PassthroughSubject<Void, Never>
+    let scrollEndPublisher: AnyPublisher<Void, Never>
+    
     
     init() {
-        let finishDetector = CurrentValueSubject<CGFloat, Never>(0)
+        // 스크롤 끝
+        let scrollEndSubject = PassthroughSubject<Void, Never>()
         
-        self.finishPublisher = finishDetector
+        self.scrollEndPublisher = scrollEndSubject
             .debounce(for: .seconds(0.2), scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
         
-        self.finishDetector = finishDetector
+        self.scrollEndSubject = scrollEndSubject
+        
+        // 스크롤링
+        let scrollingSubject = PassthroughSubject<Void, Never>()
+        
+        self.scrollingPublisher = scrollingSubject
+            .eraseToAnyPublisher()
+        
+        self.scrollingSubject = scrollingSubject
+        
+        
+        // 구독
+        self.scrollingPublisher
+            .dropFirst(1)
+            .sink(receiveValue: {
+                print("scrolling")
+                self.shouldPause = true })
+            .store(in: &cancellables)
+        
+        self.scrollEndPublisher
+            .dropFirst(1)
+            .sink(receiveValue: {
+                print("scroll end")
+                self.shouldPause = false })
+            .store(in: &cancellables)
     }
     
     func pausePublishTickers() {
+        print("pause")
         shouldPause = true
     }
     
@@ -122,8 +151,9 @@ extension ContentViewViewModel: WebsocketManagerProtocol {
     }
     
     func updateTickers(data: Data) {
+        //print(shouldPause)
         if !shouldPause {
-            if let tickerData = try? JSONDecoder().decode(Ticker.self, from: data) {
+            if let tickerData = try? JSONDecoder().decode(Ticker.self, from: data) {                
                 tickers[tickerData.code] = tickerData
             }
         }

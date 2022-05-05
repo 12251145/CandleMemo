@@ -26,7 +26,8 @@ struct DetailView: View {
                     
                 } label: {
                     VStack(alignment: .leading, spacing: 15) {
-                        Text("제목")
+                        Text("제목이 온다.")
+                            .foregroundColor(.white)
                             .fontWeight(.semibold)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 7)

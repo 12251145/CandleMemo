@@ -69,14 +69,11 @@ extension ContentView {
                     Color.clear.preference(key: ViewOffsetKey.self, value: -proxy.frame(in: .named("contentScroll")).origin.y)
                 }
             )
-            .onPreferenceChange(ViewOffsetKey.self) {
-                viewModel.pausePublishTickers()
-                viewModel.finishDetector.send($0)
+            .onPreferenceChange(ViewOffsetKey.self) { _ in
+                viewModel.scrollingSubject.send()
+                viewModel.scrollEndSubject.send()
             }
         }
         .coordinateSpace(name: "contentScroll")
-        .onReceive(viewModel.finishPublisher) { _ in
-            viewModel.resumePublishTickers()
-        }
     }
 }

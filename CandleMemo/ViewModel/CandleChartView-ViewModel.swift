@@ -22,24 +22,25 @@ protocol CandleChartManagerProtocol {
 class CandleChartViewViewModel: HTTPClient, ObservableObject {
     static var ticker: Ticker?
     
-    @Published var currentCandles: [Candle] = [] {
-        didSet {
-            currentDisplayingCandles = currentCandles[graphMoved..<graphSize + graphMoved].reversed()
-        }
-    }
-    @Published var currentDisplayingCandles: [Candle] = []
-    @Published var graphSize = 30
-    @Published var graphMoved = 0 {
+    var graphMoved = 0 {
         didSet {
             groupHigh = getGroupHigh()
             groupLow = getGroupLow()
             currentDisplayingCandles = currentCandles[graphMoved..<graphSize + graphMoved].reversed()
         }
     }
-    @Published var ex = 0
+    
+    var ex = 0
+    
+    @Published var currentCandles: [Candle] = [] {
+        didSet {
+            currentDisplayingCandles = currentCandles[graphMoved..<graphSize + graphMoved].reversed()
+        }
+    }
+    @Published var currentDisplayingCandles: [Candle] = []
+    @Published var graphSize = 70
     @Published var groupHigh: CGFloat = 1
     @Published var groupLow: CGFloat = 1
-    
     @Published var sliderLocation: Float = 0
     @Published var candleChartHeight = UIScreen.main.bounds.height * 0.27
     
