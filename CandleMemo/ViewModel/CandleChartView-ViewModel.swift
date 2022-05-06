@@ -44,6 +44,7 @@ class CandleChartViewViewModel: HTTPClient, ObservableObject {
     }
     @Published var graphSize = 70 {
         didSet {
+            sliderLocation = min(sliderLocation, Float(graphSize - 1))
             groupHigh = getGroupHigh()
             groupLow = getGroupLow()
             currentDisplayingCandles = currentCandles[graphMoved..<graphSize + graphMoved].reversed()
@@ -101,10 +102,10 @@ class CandleChartViewViewModel: HTTPClient, ObservableObject {
         chartPinchPublisher
             .sink { value in
                 if value > 1 {
-                    print(value)
-                    self.graphSize = max(Int(CGFloat(self.lastGraphSize) * (2 - value)), min(self.currentCandles.count, 25))
+                    let gentleValue = ((value - 1) / 3) + 1
+                                        
+                    self.graphSize = max(Int(CGFloat(self.lastGraphSize) * (2 - gentleValue)), min(self.currentCandles.count, 25))
                 } else {
-                    print(value)
                     self.graphSize = min(min(Int(CGFloat(self.lastGraphSize) * (2 - value)), 100), self.currentCandles.count - self.graphMoved)
                 }
             }
