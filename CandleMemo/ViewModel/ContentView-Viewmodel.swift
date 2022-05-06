@@ -24,7 +24,7 @@ final class ContentViewViewModel: HTTPClient, ObservableObject {
     @Published var krwMarkets: [Market] = []
     @Published var tickers: [String : Ticker] = [:]
     
-    private var cancellables = Set<AnyCancellable>()
+    private var subscriptions = Set<AnyCancellable>()
     private var socket: WebSocket?
     private var shouldPause = false
     private var retries = 0
@@ -59,25 +59,14 @@ final class ContentViewViewModel: HTTPClient, ObservableObject {
         self.scrollingPublisher
             .dropFirst(1)
             .sink(receiveValue: {
-                print("scrolling")
                 self.shouldPause = true })
-            .store(in: &cancellables)
+            .store(in: &subscriptions)
         
         self.scrollEndPublisher
             .dropFirst(1)
             .sink(receiveValue: {
-                print("scroll end")
                 self.shouldPause = false })
-            .store(in: &cancellables)
-    }
-    
-    func pausePublishTickers() {
-        print("pause")
-        shouldPause = true
-    }
-    
-    func resumePublishTickers() {
-        shouldPause = false
+            .store(in: &subscriptions)
     }
     
     func requestKRWMarkets() {
@@ -93,7 +82,7 @@ final class ContentViewViewModel: HTTPClient, ObservableObject {
             } receiveValue: { [weak self] markets in
                 self?.krwMarkets = markets.filter { $0.code.hasPrefix("KRW") }
             }
-            .store(in: &cancellables)
+            .store(in: &subscriptions)
     }
 }
 

@@ -22,30 +22,96 @@ protocol CandleChartManagerProtocol {
 class CandleChartViewViewModel: HTTPClient, ObservableObject {
     static var ticker: Ticker?
     
-    var graphMoved = 0 {
+    private var subscriptions = Set<AnyCancellable>()
+    
+    
+    private var graphMoved = 0 {
         didSet {
             groupHigh = getGroupHigh()
             groupLow = getGroupLow()
             currentDisplayingCandles = currentCandles[graphMoved..<graphSize + graphMoved].reversed()
         }
     }
+    private var chartScrollBy: CGFloat = 7
+    var lastGraphMoved = 0
+    var lastGraphSize = 0
     
-    var ex = 0
     
     @Published var currentCandles: [Candle] = [] {
         didSet {
             currentDisplayingCandles = currentCandles[graphMoved..<graphSize + graphMoved].reversed()
         }
     }
+    @Published var graphSize = 70 {
+        didSet {
+            groupHigh = getGroupHigh()
+            groupLow = getGroupLow()
+            currentDisplayingCandles = currentCandles[graphMoved..<graphSize + graphMoved].reversed()
+        }
+    }
     @Published var currentDisplayingCandles: [Candle] = []
-    @Published var graphSize = 70
     @Published var groupHigh: CGFloat = 1
     @Published var groupLow: CGFloat = 1
     @Published var sliderLocation: Float = 0
     @Published var candleChartHeight = UIScreen.main.bounds.height * 0.27
     
+    let chartScrollSubject: PassthroughSubject<CGFloat, Never>
+    let chartScrollPublisher: AnyPublisher<CGFloat, Never>
+    
+    let chartPinchSubject: PassthroughSubject<CGFloat, Never>
+    let chartPinchPublisher: AnyPublisher<CGFloat, Never>
+    
     init() {
-        print("init viewModel")
+        // 스크롤
+        let chartScrollSubject = PassthroughSubject<CGFloat, Never>()
+        
+        self.chartScrollPublisher = chartScrollSubject
+            .eraseToAnyPublisher()
+        
+        self.chartScrollSubject = chartScrollSubject
+        
+        // 핀치
+        let chartPinchSubject = PassthroughSubject<CGFloat, Never>()
+        
+        self.chartPinchPublisher = chartPinchSubject
+            .eraseToAnyPublisher()
+        
+        self.chartPinchSubject = chartPinchSubject
+                
+        // 구독
+        chartScrollPublisher
+            .sink { value in
+                if self.lastGraphMoved != Int(value / self.chartScrollBy) {
+                    
+                    if self.graphMoved + (Int(value / self.chartScrollBy) - self.lastGraphMoved) < 0 {
+                        self.graphMoved = 0
+                    } else if self.graphSize >= self.currentCandles.count - 1 {
+                        self.graphMoved = 0
+                    } else if self.graphMoved + self.graphSize + (Int(value / self.chartScrollBy) - self.lastGraphMoved) > self.currentCandles.count - 1 {
+                        self.graphMoved = self.currentCandles.count - self.graphSize
+                    } else {
+                        self.graphMoved = self.graphMoved + (Int(value / self.chartScrollBy) - self.lastGraphMoved)
+                    }
+                    
+                    self.lastGraphMoved = Int(value) / Int(self.chartScrollBy)
+                }
+            }
+            .store(in: &subscriptions)
+        
+        chartPinchPublisher
+            .sink { value in
+                if value > 1 {
+                    print(value)
+                    self.graphSize = max(Int(CGFloat(self.lastGraphSize) * (2 - value)), min(self.currentCandles.count, 25))
+                } else {
+                    print(value)
+                    self.graphSize = min(min(Int(CGFloat(self.lastGraphSize) * (2 - value)), 100), self.currentCandles.count - self.graphMoved)
+                }
+            }
+            .store(in: &subscriptions)
+        
+        //
+        self.lastGraphSize = self.graphSize
     }
     
     

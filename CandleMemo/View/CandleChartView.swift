@@ -61,23 +61,19 @@ struct CandleChartView: View {
                         .gesture(
                             DragGesture()
                                 .onChanged{ value in
-                                    if viewModel.ex != Int(value.translation.width / 7) {
-                                        
-                                        if viewModel.graphMoved + (Int(value.translation.width / 7) - viewModel.ex) < 0 {
-                                            viewModel.graphMoved = 0
-                                        } else if viewModel.graphSize >= viewModel.currentCandles.count - 1 {
-                                            viewModel.graphMoved = 0
-                                        } else if viewModel.graphMoved + viewModel.graphSize + (Int(value.translation.width / 7) - viewModel.ex) > viewModel.currentCandles.count - 1 {
-                                            viewModel.graphMoved = viewModel.currentCandles.count - viewModel.graphSize
-                                        } else {
-                                            viewModel.graphMoved = viewModel.graphMoved + (Int(value.translation.width / 7) - viewModel.ex)
-                                        }
-                                        
-                                        viewModel.ex = Int(value.translation.width) / 7
-                                    }
+                                    viewModel.chartScrollSubject.send(value.translation.width)
                                 }
-                                .onEnded{ value in
-                                    viewModel.ex = 0
+                                .onEnded{ _ in
+                                    viewModel.lastGraphMoved = 0
+                                }
+                        )
+                        .gesture(
+                            MagnificationGesture()
+                                .onChanged { value in
+                                    viewModel.chartPinchSubject.send(value)
+                                }
+                                .onEnded { _ in
+                                    viewModel.lastGraphSize = viewModel.graphSize                                
                                 }
                         )
                     )
