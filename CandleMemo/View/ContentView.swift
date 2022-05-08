@@ -30,6 +30,11 @@ struct ContentView: View {
                 .navTitle("코인")
                 .navDate("6월 17일")
         }
+        .overlay {
+            if viewModel.krwMarkets.isEmpty {
+                ProgressView()
+            }
+        }
         .environmentObject(viewModel)
         .onAppear {
             viewModel.requestKRWMarkets()
@@ -70,8 +75,7 @@ extension ContentView {
                 }
             )
             .onPreferenceChange(ViewOffsetKey.self) { _ in
-                viewModel.scrollingSubject.send()
-                viewModel.scrollEndSubject.send()
+                viewModel.scrollingSubject.send()                
             }
         }
         .coordinateSpace(name: "contentScroll")

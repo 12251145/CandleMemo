@@ -24,7 +24,7 @@ class CandleChartViewViewModel: HTTPClient, ObservableObject {
     
     private var subscriptions = Set<AnyCancellable>()
     
-    
+    // MARK: - 차트
     private var graphMoved = 0 {
         didSet {
             groupHigh = getGroupHigh()
@@ -32,17 +32,24 @@ class CandleChartViewViewModel: HTTPClient, ObservableObject {
             currentDisplayingCandles = currentCandles[graphMoved..<graphSize + graphMoved].reversed()
         }
     }
+    
     private var chartScrollBy: CGFloat = 7
+    
     var lastGraphMoved = 0
     var lastGraphSize = 0
+    var lastGraphZoomed: CGFloat = 1
     
+
     
     @Published var currentCandles: [Candle] = [] {
         didSet {
+            if graphSize > currentCandles.count {
+                graphSize = currentCandles.count
+            }
             currentDisplayingCandles = currentCandles[graphMoved..<graphSize + graphMoved].reversed()
         }
     }
-    @Published var graphSize = 70 {
+    @Published var graphSize = 40 {
         didSet {
             sliderLocation = min(sliderLocation, Float(graphSize - 1))
             groupHigh = getGroupHigh()
@@ -54,7 +61,9 @@ class CandleChartViewViewModel: HTTPClient, ObservableObject {
     @Published var groupHigh: CGFloat = 1
     @Published var groupLow: CGFloat = 1
     @Published var sliderLocation: Float = 0
-    @Published var candleChartHeight = UIScreen.main.bounds.height * 0.27
+    @Published var candleChartHeight: CGFloat = 250
+    
+    // MARK: - Combine
     
     let chartScrollSubject: PassthroughSubject<CGFloat, Never>
     let chartScrollPublisher: AnyPublisher<CGFloat, Never>
@@ -83,7 +92,7 @@ class CandleChartViewViewModel: HTTPClient, ObservableObject {
         chartScrollPublisher
             .sink { value in
                 if self.lastGraphMoved != Int(value / self.chartScrollBy) {
-                    
+                
                     if self.graphMoved + (Int(value / self.chartScrollBy) - self.lastGraphMoved) < 0 {
                         self.graphMoved = 0
                     } else if self.graphSize >= self.currentCandles.count - 1 {
@@ -94,6 +103,7 @@ class CandleChartViewViewModel: HTTPClient, ObservableObject {
                         self.graphMoved = self.graphMoved + (Int(value / self.chartScrollBy) - self.lastGraphMoved)
                     }
                     
+                    
                     self.lastGraphMoved = Int(value) / Int(self.chartScrollBy)
                 }
             }
@@ -101,13 +111,19 @@ class CandleChartViewViewModel: HTTPClient, ObservableObject {
         
         chartPinchPublisher
             .sink { value in
-                if value > 1 {
-                    let gentleValue = ((value - 1) / 3) + 1
-                                        
-                    self.graphSize = max(Int(CGFloat(self.lastGraphSize) * (2 - gentleValue)), min(self.currentCandles.count, 25))
-                } else {
-                    self.graphSize = min(min(Int(CGFloat(self.lastGraphSize) * (2 - value)), 100), self.currentCandles.count - self.graphMoved)
+                
+                withAnimation(Animation.linear(duration: 0.05)) {
+                    if self.graphSize >= 25 {
+                        if value > 1 {
+                            let gentleValue = ((value - 1) / 7) + 1
+                            self.graphSize = max(Int(CGFloat(self.lastGraphSize) * (2 - gentleValue)), min(self.currentCandles.count, 25))
+                        } else {
+                            self.graphSize = min(min(Int(CGFloat(self.lastGraphSize) * (2 - value)), 100), self.currentCandles.count - self.graphMoved)
+                        }
+                    }
                 }
+                
+                self.lastGraphZoomed = value
             }
             .store(in: &subscriptions)
         
@@ -115,8 +131,6 @@ class CandleChartViewViewModel: HTTPClient, ObservableObject {
         self.lastGraphSize = self.graphSize
     }
     
-    
-    private var cancellables = Set<AnyCancellable>()
     
     func requestCandles(code: String, to: String? = nil, count: String? = "200") {
         getCandles(from: code, to: to, count: count)
@@ -137,7 +151,7 @@ class CandleChartViewViewModel: HTTPClient, ObservableObject {
                 
                 self?.sliderLocation = 0
             }
-            .store(in: &cancellables)
+            .store(in: &subscriptions)
     }
 }
 

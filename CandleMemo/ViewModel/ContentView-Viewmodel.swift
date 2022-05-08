@@ -30,25 +30,19 @@ final class ContentViewViewModel: HTTPClient, ObservableObject {
     private var retries = 0
 
     let scrollingSubject: PassthroughSubject<Void, Never>
-    let scrollingPublisher: AnyPublisher<Void, Never>
     
-    let scrollEndSubject: PassthroughSubject<Void, Never>
+    let scrollingPublisher: AnyPublisher<Void, Never>
     let scrollEndPublisher: AnyPublisher<Void, Never>
     
     
     init() {
-        // 스크롤 끝
-        let scrollEndSubject = PassthroughSubject<Void, Never>()
-        
-        self.scrollEndPublisher = scrollEndSubject
-            .debounce(for: .seconds(0.2), scheduler: DispatchQueue.main)
-            .eraseToAnyPublisher()
-        
-        self.scrollEndSubject = scrollEndSubject
-        
-        // 스크롤링
+        // 스크롤
         let scrollingSubject = PassthroughSubject<Void, Never>()
         
+        self.scrollEndPublisher = scrollingSubject
+            .debounce(for: .seconds(0.2), scheduler: DispatchQueue.main)
+            .eraseToAnyPublisher()
+
         self.scrollingPublisher = scrollingSubject
             .eraseToAnyPublisher()
         
@@ -140,7 +134,6 @@ extension ContentViewViewModel: WebsocketManagerProtocol {
     }
     
     func updateTickers(data: Data) {
-        //print(shouldPause)
         if !shouldPause {
             if let tickerData = try? JSONDecoder().decode(Ticker.self, from: data) {                
                 tickers[tickerData.code] = tickerData

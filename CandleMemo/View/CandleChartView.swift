@@ -32,17 +32,22 @@ struct CandleChartView: View {
                         ForEach(viewModel.currentDisplayingCandles) { candle in
                             GeometryReader { proxy in
                                 let size = proxy.size
-
+                                
                                 VStack(alignment: .center, spacing: 0) {
                                     
                                     Rectangle()
                                         .fill(.clear)
                                         .frame(height: ((viewModel.groupHigh - candle.highPrice) / (viewModel.groupHigh - viewModel.groupLow)) * size.height)
                                     
-                                    CandleShape(openingPrice: candle.openingPrice, tradePrice: candle.tradePrice, highPrice: candle.highPrice, lowPrice: candle.lowPrice)
-                                        .fill(candle.openingPrice > candle.tradePrice ? .blue : .pink)
-                                        .frame(height: ((candle.highPrice - candle.lowPrice) / (viewModel.groupHigh - viewModel.groupLow)) * size.height)
-                                        .border(viewModel.currentDisplayingCandles[Int(viewModel.sliderLocation)].candleDateTimeKST == candle.candleDateTimeKST ? .white : .clear, width: 1)
+                                    ZStack(alignment: .top) {
+                                        
+                                        CandleShape(openingPrice: candle.openingPrice, tradePrice: candle.tradePrice, highPrice: candle.highPrice, lowPrice: candle.lowPrice)
+                                            .fill(candle.openingPrice > candle.tradePrice ? .blue : .pink)
+                                            .frame(height: ((candle.highPrice - candle.lowPrice) / (viewModel.groupHigh - viewModel.groupLow)) * size.height)
+                                            .border(viewModel.currentDisplayingCandles[Int(viewModel.sliderLocation)].candleDateTimeKST == candle.candleDateTimeKST ? .white : .clear, width: 1)
+                                        
+                                        // 메모 있다는 것 표시 해야 함.
+                                    }
                                     
                                     Rectangle()
                                         .fill(.clear)
@@ -52,6 +57,8 @@ struct CandleChartView: View {
                         }
                     }
                 }
+                .padding(.bottom, 4)
+                .animation(.linear(duration: 0.05), value: viewModel.currentDisplayingCandles)
                 .frame(height: viewModel.candleChartHeight)
                 .overlay(
                     RoundedRectangle(cornerRadius: 0)
@@ -63,7 +70,7 @@ struct CandleChartView: View {
                                 .onChanged{ value in
                                     viewModel.chartScrollSubject.send(value.translation.width)
                                 }
-                                .onEnded{ _ in
+                                .onEnded{ value in
                                     viewModel.lastGraphMoved = 0
                                 }
                         )
@@ -73,7 +80,7 @@ struct CandleChartView: View {
                                     viewModel.chartPinchSubject.send(value)
                                 }
                                 .onEnded { _ in
-                                    viewModel.lastGraphSize = viewModel.graphSize                                
+                                    viewModel.lastGraphSize = viewModel.graphSize
                                 }
                         )
                     )
@@ -178,7 +185,7 @@ struct CandleChartView: View {
                     }
                 }
             }
-            .padding(.top, 10)
+            .padding(.top, 20)
             
             HStack(spacing: 1) {
                 // 캔들 선택 슬라이더
@@ -188,7 +195,7 @@ struct CandleChartView: View {
                 
                 // 메모 추가 버튼
                 Button {
-                    
+                    print(viewModel.currentDisplayingCandles[Int(viewModel.sliderLocation)].candleDateTimeKST)
                 } label: {
                     ZStack {
                         RoundedRectangle(cornerRadius: 10, style: .continuous)
@@ -203,18 +210,9 @@ struct CandleChartView: View {
                     }
                 }
             }
-            .padding(.top, 20)
-            
-            // 핸들
-            HStack {
-                Capsule()
-                    .fill(Color.init(white: 0.9))
-                    .frame(width: 50, height: 5)
-                    .padding(.bottom, 5)
-            }
-            .frame(width: UIScreen.main.bounds.width, height: 25)
+            .padding(.top, 5)
         }
-        .onAppear {            
+        .onAppear {
             viewModel.requestCandles(code: market.code, count: "200")
         }
         .onChange(of: CandleChartViewViewModel.ticker) { _ in
